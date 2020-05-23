@@ -1,0 +1,93 @@
+############################################################################
+#  This file is part of HA, a general purpose file archiver.
+#  Copyright (C) 1995 Harri Hirvola
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+############################################################################
+#	Makefile for HA using bcc 4.0 on PC
+############################################################################
+
+
+MCH = pc
+INC = include
+C_SRC = c
+BCDIR = c:\apps\bc4
+STARTUP = $(BCDIR)\lib\c0c.obj
+LIBS = $(BCDIR)\lib\cc.lib
+!ifdef PCASM
+COPT = -DPCASM -mc -O2 -c -K -w -n$: -I$(MCH) -I$(INC) -I$(BCDIR)\include
+!else 
+COPT = -mc -O2 -c -K -w -n$: -I$(MCH) -I$(INC) -I$(BCDIR)\include
+!endif
+ASM = tasm
+AOPT = /zi
+LINK = tlink
+LOPT = /L$(C_SRC)
+
+!ifdef PCASM
+OBJS =  ha.obj haio.obj archive.obj swdict.obj \
+	cpy.obj error.obj misc.obj asc.obj \
+	$(MCH)\machine.obj $(MCH)\info.obj $(MCH)\a_hsc.obj \
+	$(MCH)\a_acoder.obj $(MCH)\a_swdict.obj
+!else 
+OBJS =  ha.obj haio.obj archive.obj acoder.obj swdict.obj \
+	cpy.obj error.obj misc.obj hsc.obj acoder.obj asc.obj \
+	$(MCH)\machine.obj $(MCH)\info.obj 
+!endif
+
+.path.obj = $(C_SRC)
+.path.c   = $(C_SRC)
+.path.h   = $(INC)
+
+.c.obj:
+	bcc $(COPT) $*.c
+
+.asm.obj:
+	bcc $(AOPT) $*.asm
+
+ha.exe : $(OBJS)
+	tlink $(LOPT) @&&!
+$(STARTUP) $**
+$&.exe
+$&.map
+$(LIBS)
+!
+
+$(MCH)\machine.obj: $(MCH)\machine.c $(MCH)\machine.h
+	bcc $(COPT) $*.c
+
+$(MCH)\info.obj: $(MCH)\info.c 
+	bcc $(COPT) $*.c
+
+$(MCH)\info.c: $(MCH)\info.txt
+	ha MAKEINFO $(MCH)\info.txt $(MCH)\info.c
+
+$(MCH)\a_acoder.obj: $(MCH)\a_acoder.asm
+	tasm $(AOPT) $(MCH)\a_acoder.asm,$(MCH)\a_acoder.obj
+
+$(MCH)\a_swdict.obj: $(MCH)\a_swdict.asm
+	tasm $(AOPT) $(MCH)\a_swdict.asm,$(MCH)\a_swdict.obj
+
+$(MCH)\a_hsc.obj: $(MCH)\a_hsc.asm
+	tasm $(AOPT) $(MCH)\a_hsc.asm,$(MCH)\a_hsc.obj
+
+$(MCH)\a_asc.obj: $(MCH)\a_asc.asm
+	tasm $(AOPT) $(MCH)\a_asc.asm,$(MCH)\a_asc.obj
+
+clean:
+	del ha.exe 
+	del ha.map
+	del $(C_SRC)\*.obj 
+	del $(MCH)\*.obj

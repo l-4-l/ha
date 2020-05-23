@@ -1,0 +1,37 @@
+The files in this directory are necessary to compile under Linux, at
+least, with the default flat-directory structure of the ha_src.ha
+archive (0.999<beta>).
+
+To compile under Linux (or generic Unix):
+
+ - rename makefile to makefile.foo and move grr/Makefile to the main
+   directory
+
+ - rename machine.h to machine.h.dos (not used) and move grr/machine.h
+   to the main directory
+
+ - possibly edit machine.h if some include files aren't in the locations
+   I used (try compiling as-is first and see what breaks)
+
+ - do "make ha"
+
+This worked fine for me (although it took some tinkering to figure out
+the correct machine.h for Unix).  My Linux "ha" doesn't seem to recurse
+directories properly, but aside from that it works fine.  Here's some
+magic for use with Darwin's file(1), version 3.14 or later:
+
+# HA archiver (Greg Roelofs, newt@uchicago.edu)
+0	string		HA		HA archive data,
+>2	leshort		x		%u files,
+>4	byte&0x0f	=0		first is type CPY
+>4	byte&0x0f	=1		first is type ASC
+>4	byte&0x0f	=2		first is type HSC
+>4	byte&0x0f	=14		first is type DIR
+>4	byte&0x0f	=0x0f		first is type SPECIAL
+
+(There seems to be a bug in file 3.14 with regard to the last two "="
+values; neither hex nor decimal works right.  I haven't found the problem
+yet.)
+
+Greg Roelofs
+95.01.20
