@@ -16,46 +16,46 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ************************************************************************
-	GRR Unix-specific include file for HA
+	HA PC/bcc specific include file
 ***********************************************************************/
 
-#include <unistd.h>
-#include <sys/dir.h>
+#include <dos.h>
+#include <io.h>
+#include <dir.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <signal.h>
 
 #define BETA "á"
-typedef short S16B;
-typedef unsigned short U16B;
+typedef int S16B;
+typedef unsigned U16B;
 typedef long S32B;
 typedef unsigned long U32B;
 
-#define EXAMPLE "\n examples : ha a21r foo /bar/* , ha l foo , ha xy foo" 
-#define ALLFILES "*"
+#define EXAMPLE "\n examples : ha a21r foo \\bar\\*.* , ha l foo , ha xy foo" 
+#define ALLFILES "*.*"
 #define F_32B "ld"
 #define FX_32B "lX"
 
-#define O_BINARY  0
-
-#define AO_FLAGS O_RDWR
-#define AO_RDOFLAGS O_RDONLY
-#define AC_FLAGS O_RDWR|O_CREAT,S_IREAD|S_IWRITE
-/* #define DEF_FILEATTR S_IREAD|S_IWRITE */
-/* #define DEF_DIRATTR  DEF_FILEATTR */
-#define DEF_FILEATTR 0644
-#define DEF_DIRATTR  0755
+#define AO_FLAGS (O_RDWR|O_BINARY)
+#define AO_RDOFLAGS (O_RDONLY|O_BINARY)
+#define AC_FLAGS O_RDWR|O_BINARY|O_CREAT,S_IREAD|S_IWRITE
+#define DEF_FILEATTR S_IREAD|S_IWRITE
+#define DEF_DIRATTR  DEF_FILEATTR
 
 #define F_OK	0
+#define STDOUT_FILENO fileno(stdout)
 
+#define mkdir(a,b) mkdir(a)
 #define md_curfilesize() filestat.st_size
 #define md_curfiletime() filestat.st_mtime
-#define md_strcase
+
+#define md_special(a,b)       0   /* Not needed in msdos */
 
 extern struct stat filestat;
 
 void md_init(void);	
-/* char *md_strcase(char *s); */
+char *md_strcase(char *s);
 char *md_arcname(char *name_req);
 void md_gethdr(int len, int mode);
 void md_puthdr(void);
@@ -75,3 +75,16 @@ int md_namecmp(char *pat, char *cmp);
 void md_setft(char *file,U32B time);
 void md_setfattrs(char *file);
 U32B md_systime(void);
+
+
+
+
+
+
+
+
+
+
+
+
+
