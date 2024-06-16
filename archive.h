@@ -63,6 +63,7 @@ int arc_addspecial(char *fullname);
 void arc_accept(int method);
 void arc_trynext(void);
 int arc_addfile(void);
+int md_special(char *fullname, unsigned char **sdata);
 
 
 

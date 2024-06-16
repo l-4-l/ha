@@ -19,11 +19,33 @@
 #	Makefile for HA/gcc
 ############################################################################
 
-OBJS = ha.o haio.o machine.o archive.o acoder.o swdict.o \
-	cpy.o error.o misc.o hsc.o asc.o info.o
+MCH = nix
 
-all: $(OBJS)
-ha: all
+CC = gcc
+CPP = $(CC) -E
+CFLAGS = -Wall -O2 -c -I../$(MCH) -I../include
+LDFLAGS = -O2
+
+MDEFINES = "CC=$(CC)" "CPP=$(CPP)" "CFLAGS=$(CFLAGS)" "DEFS=$(DEFS)"
+SUBDIRS = include
+OBJS = c/*.o $(MCH)/*.o
+
+ha: subdirs 
 	$(CC) $(LDFLAGS) -o ha $(OBJS)
-clean:
-	rm -f *.o ./ha
+
+subdirs: 
+	@for i in $(SUBDIRS); do (cd $$i && echo $$i && $(MAKE) $(MDEFINES)) || exit; done
+
+depend dep:
+	@for i in $(SUBDIRS); do (cd $$i && $(MAKE) $(MDEFINES) dep) || exit; done
+
+clean: 
+	@for i in $(SUBDIRS); do (cd $$i && $(MAKE) clean) || exit; done
+	rm -f .depend ha *.out *~
+
+#
+# include a dependency file if one exists
+#
+ifeq (.depend,$(wildcard .depend))
+include .depend
+endif

@@ -16,14 +16,15 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ############################################################################
-#	Makefile for HA/gcc
+#	Makefile for HA includes
 ############################################################################
 
-OBJS = ha.o haio.o machine.o archive.o acoder.o swdict.o \
-	cpy.o error.o misc.o hsc.o asc.o info.o
+all:
 
-all: $(OBJS)
-ha: all
-	$(CC) $(LDFLAGS) -o ha $(OBJS)
-clean:
-	rm -f *.o ./ha
+depend dep:
+
+clean: 
+	rm -f *~
+
+
+
