@@ -28,8 +28,8 @@
 #define BETA "á"
 typedef short S16B;
 typedef unsigned short U16B;
-typedef long S32B;
-typedef unsigned long U32B;
+typedef int32_t S32B;
+typedef uint32_t U32B;
 
 #define EXAMPLE "\n examples : ha a21r foo /bar/* , ha l foo , ha xy foo" 
 #define ALLFILES "*"
