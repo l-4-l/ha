@@ -37,6 +37,8 @@ static int dirty=0,addtries;
 static U32B nextheader=4,thisheader,arcsize,bestpos,trypos;
 static Fheader newhdr;
 
+int md_special(char *fullname, unsigned char **sdata);
+
 static U32B getvalue(int len) {
 
     unsigned char buf[4];
